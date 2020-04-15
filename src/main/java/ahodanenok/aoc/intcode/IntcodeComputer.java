@@ -9,6 +9,8 @@ public class IntcodeComputer {
     public IntcodeComputer(long[] program) {
         Memory memory = new Memory(program);
         context = new ExecutionContext(memory);
+        in = In.NONE;
+        out = Out.NONE;
     }
 
     public void setIn(In in) {
