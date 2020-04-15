@@ -164,6 +164,7 @@ public class IntcodeTest {
         assertEquals(0, pc.memread(3));
     }
 
+    @Test
     public void jnz_1() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 5, 1, 4, 99, 4, 0, 99});
         pc.setOut(new Out() {
@@ -182,8 +183,46 @@ public class IntcodeTest {
         });
     }
 
+    @Test
     public void jnz_2() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 5, 0, 4, 99, 4, 0, 99});
+        pc.setOut(new Out() {
+            boolean written = false;
+
+            @Override
+            public void write(long n) {
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertFalse(written);
+            }
+        });
+    }
+
+    @Test
+    public void jze_1() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 5, 0, 4, 99, 4, 0, 99});
+        pc.setOut(new Out() {
+            boolean written = false;
+
+            @Override
+            public void write(long n) {
+                assertEquals(5, n);
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertTrue(written);
+            }
+        });
+    }
+
+    @Test
+    public void jze_2() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 5, 1, 4, 99, 4, 0, 99});
         pc.setOut(new Out() {
             boolean written = false;
 

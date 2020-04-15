@@ -7,6 +7,7 @@ public class IntcodeComputer {
     private static final long OPCODE_IN = 3;
     private static final long OPCODE_OUT = 4;
     private static final long OPCODE_JNZ = 5;
+    private static final long OPCODE_JZE = 6;
     private static final long OPCODE_REL = 9;
 
     private static final long MODE_POSITION = 0;
@@ -69,6 +70,13 @@ public class IntcodeComputer {
             } else if (opcode == OPCODE_JNZ) {
                 long n = _memread(instruction, 1);
                 if (n != 0) {
+                    context.pc = (int) _memread(instruction, 2);
+                } else {
+                    context.pc += 3;
+                }
+            } else if (opcode == OPCODE_JZE) {
+                long n = _memread(instruction, 1);
+                if (n == 0) {
                     context.pc = (int) _memread(instruction, 2);
                 } else {
                     context.pc += 3;
