@@ -115,9 +115,17 @@ public class IntcodeTest {
     public void out_1() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 4, 3, 99, 8 });
         pc.setOut(new Out() {
+            boolean written = false;
+
             @Override
             public void write(long n) {
                 assertEquals(8, n);
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertTrue(written);
             }
         });
 
@@ -134,9 +142,17 @@ public class IntcodeTest {
     public void out_2() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 104, 1125899906842624L, 99 });
         pc.setOut(new Out() {
+            boolean written = false;
+
             @Override
             public void write(long n) {
                 assertEquals(1125899906842624L, n);
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertTrue(written);
             }
         });
 
@@ -146,6 +162,41 @@ public class IntcodeTest {
         assertEquals(1125899906842624L, pc.memread(1));
         assertEquals(99, pc.memread(2));
         assertEquals(0, pc.memread(3));
+    }
+
+    public void jnz_1() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 5, 1, 4, 99, 4, 0, 99});
+        pc.setOut(new Out() {
+            boolean written = false;
+
+            @Override
+            public void write(long n) {
+                assertEquals(5, n);
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertTrue(written);
+            }
+        });
+    }
+
+    public void jnz_2() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 5, 0, 4, 99, 4, 0, 99});
+        pc.setOut(new Out() {
+            boolean written = false;
+
+            @Override
+            public void write(long n) {
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertFalse(written);
+            }
+        });
     }
 
     @Test
@@ -178,9 +229,17 @@ public class IntcodeTest {
     public void modeRel_1() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 109, 1, 109, 2, 204, 3, 100, 99 });
         pc.setOut(new Out() {
+            boolean written = false;
+
             @Override
             public void write(long n) {
                 assertEquals(100, n);
+                written = true;
+            }
+
+            @Override
+            public void close() {
+                assertTrue(written);
             }
         });
     }
