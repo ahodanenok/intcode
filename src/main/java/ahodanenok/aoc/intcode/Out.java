@@ -9,9 +9,7 @@ public interface Out {
         }
 
         @Override
-        public void close() {
-            throw new IllegalStateException("no out");
-        }
+        public void close() { }
     };
 
     void write(long n);

@@ -9,9 +9,7 @@ public interface In {
         }
 
         @Override
-        public void close() {
-            throw new IllegalStateException("no in");
-        }
+        public void close() { }
     };
 
     long read();
