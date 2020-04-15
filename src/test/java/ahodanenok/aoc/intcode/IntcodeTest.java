@@ -36,6 +36,33 @@ public class IntcodeTest {
     }
 
     @Test
+    public void mul_1() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 2, 2, 4, 0, 99 });
+        pc.run();
+
+        assertEquals(4 * 99, pc.memread(0));
+        assertEquals(2, pc.memread(1));
+        assertEquals(4, pc.memread(2));
+        assertEquals(0, pc.memread(3));
+        assertEquals(99, pc.memread(4));
+        assertEquals(0, pc.memread(5));
+    }
+
+    @Test
+    public void mul_2() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 2, 1, 3, 5, 99 });
+        pc.run();
+
+        assertEquals(2, pc.memread(0));
+        assertEquals(1, pc.memread(1));
+        assertEquals(3, pc.memread(2));
+        assertEquals(5, pc.memread(3));
+        assertEquals(99, pc.memread(4));
+        assertEquals(5, pc.memread(5));
+        assertEquals(0, pc.memread(6));
+    }
+
+    @Test
     public void in_1() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 3, 5, 99 });
         pc.setIn(new In() {
