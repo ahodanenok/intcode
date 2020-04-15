@@ -7,12 +7,9 @@ public interface Out {
         public void write(long n) {
             throw new IllegalStateException("no out");
         }
-
-        @Override
-        public void close() { }
     };
 
     void write(long n);
 
-    void close();
+    default void close() { };
 }

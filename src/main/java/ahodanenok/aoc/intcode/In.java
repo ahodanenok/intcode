@@ -7,12 +7,9 @@ public interface In {
         public long read() {
             throw new IllegalStateException("no in");
         }
-
-        @Override
-        public void close() { }
     };
 
     long read();
 
-    void close();
+    default void close() { };
 }
