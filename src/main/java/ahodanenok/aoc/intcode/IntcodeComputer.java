@@ -51,8 +51,16 @@ public class IntcodeComputer {
         this.in = in;
     }
 
+    public In getIn() {
+        return in;
+    }
+
     public void setOut(Out out) {
         this.out = out;
+    }
+
+    public Out getOut() {
+        return out;
     }
 
     public void memset(int address, long value) {
