@@ -34,13 +34,15 @@ public class IntcodeComputer {
     private static final long MODE_IMMEDIATE = 1;
     private static final long MODE_RELATIVE = 2;
 
-    private ExecutionContext context;
+    private Memory memory;
+    private int pc;
+    private int relativeBase;
+
     private In in;
     private Out out;
 
     public IntcodeComputer(long[] program) {
-        Memory memory = new Memory(program);
-        context = new ExecutionContext(memory);
+        memory = new Memory(program);
         in = In.NONE;
         out = Out.NONE;
     }
@@ -54,65 +56,65 @@ public class IntcodeComputer {
     }
 
     public void memset(int address, long value) {
-        context.memory.write(address, value);
+        memory.write(address, value);
     }
 
     public long memread(int address) {
-        return context.memory.read(address);
+        return memory.read(address);
     }
 
     public void run() {
-        while (memread(context.pc) != 99) {
-            long instruction = memread(context.pc);
+        while (memread(pc) != 99) {
+            long instruction = memread(pc);
             long opcode = instruction % 100;
             if (opcode == OPCODE_SUM) {
                 long a = _memread(instruction, 1);
                 long b = _memread(instruction, 2);
                 _memset(instruction, 3, a + b);
-                context.pc += 4;
+                pc += 4;
             } else if (opcode == OPCODE_MUL) {
                 long a = _memread(instruction, 1);
                 long b = _memread(instruction, 2);
                 _memset(instruction, 3, a * b);
-                context.pc += 4;
+                pc += 4;
             } else if (opcode == OPCODE_IN) {
                 long n = in.read();
                 _memset(instruction, 1, n);
-                context.pc += 2;
+                pc += 2;
             } else if (opcode == OPCODE_OUT) {
                 long n = _memread(instruction, 1);
                 out.write(n);
-                context.pc += 2;
+                pc += 2;
             } else if (opcode == OPCODE_REL) {
                 long n = _memread(instruction, 1);
-                context.relativeBase += n;
-                context.pc += 2;
+                relativeBase += n;
+                pc += 2;
             } else if (opcode == OPCODE_JNZ) {
                 long n = _memread(instruction, 1);
                 if (n != 0) {
-                    context.pc = (int) _memread(instruction, 2);
+                    pc = (int) _memread(instruction, 2);
                 } else {
-                    context.pc += 3;
+                    pc += 3;
                 }
             } else if (opcode == OPCODE_JZE) {
                 long n = _memread(instruction, 1);
                 if (n == 0) {
-                    context.pc = (int) _memread(instruction, 2);
+                    pc = (int) _memread(instruction, 2);
                 } else {
-                    context.pc += 3;
+                    pc += 3;
                 }
             } else if (opcode == OPCODE_LT) {
                 long a = _memread(instruction, 1);
                 long b = _memread(instruction, 2);
                 _memset(instruction, 3, a < b ? 1 : 0);
-                context.pc += 4;
+                pc += 4;
             } else if (opcode == OPCODE_EQ) {
                 long a = _memread(instruction, 1);
                 long b = _memread(instruction, 2);
                 _memset(instruction, 3, a == b ? 1 : 0);
-                context.pc += 4;
+                pc += 4;
             } else {
-                throw new IllegalStateException(String.format("Unknown opcode %d at position %d", opcode, context.pc));
+                throw new IllegalStateException(String.format("Unknown opcode %d at position %d", opcode, pc));
             }
         }
 
@@ -138,11 +140,11 @@ public class IntcodeComputer {
 
         long mode = (instruction / n) % 10;
         if (mode == MODE_POSITION) {
-            return (int) memread(context.pc + offset);
+            return (int) memread(pc + offset);
         } else if (mode == MODE_IMMEDIATE) {
-            return context.pc + offset;
+            return pc + offset;
         } else if (mode == MODE_RELATIVE) {
-            return (int) memread(context.pc + offset) + context.relativeBase;
+            return (int) memread(pc + offset) + relativeBase;
         } else {
             throw new IllegalStateException("Unknown parameter mode " + mode + " in opcode " + instruction);
         }
