@@ -70,9 +70,6 @@ public class IntcodeTest {
             public long read() {
                 return 10;
             }
-
-            @Override
-            public void close() { }
         });
 
         pc.run();
@@ -101,9 +98,6 @@ public class IntcodeTest {
             public long read() {
                 return input.removeFirst();
             }
-
-            @Override
-            public void close() { }
         });
 
         pc.run();
@@ -125,9 +119,6 @@ public class IntcodeTest {
             public void write(long n) {
                 assertEquals(8, n);
             }
-
-            @Override
-            public void close() { }
         });
 
         pc.run();
