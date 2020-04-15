@@ -6,9 +6,11 @@ public class IntcodeComputer {
     private static final long OPCODE_MUL = 2;
     private static final long OPCODE_IN = 3;
     private static final long OPCODE_OUT = 4;
+    private static final long OPCODE_REL = 9;
 
     private static final long MODE_POSITION = 0;
     private static final long MODE_IMMEDIATE = 1;
+    private static final long MODE_RELATIVE = 2;
 
     private ExecutionContext context;
     private In in;
@@ -59,6 +61,10 @@ public class IntcodeComputer {
                 long n = _memread(instruction, 1);
                 out.write(n);
                 context.pc += 2;
+            } else if (opcode == OPCODE_REL) {
+                long n = _memread(instruction, 1);
+                context.relativeBase += n;
+                context.pc += 2;
             } else {
                 throw new IllegalStateException(String.format("Unknown opcode %d at position %d", opcode, context.pc));
             }
@@ -89,6 +95,8 @@ public class IntcodeComputer {
             return (int) memread(context.pc + offset);
         } else if (mode == MODE_IMMEDIATE) {
             return context.pc + offset;
+        } else if (mode == MODE_RELATIVE) {
+            return (int) memread(context.pc + offset) + context.relativeBase;
         } else {
             throw new IllegalStateException("Unknown parameter mode " + mode + " in opcode " + instruction);
         }

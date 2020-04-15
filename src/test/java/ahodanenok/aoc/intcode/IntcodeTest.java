@@ -164,4 +164,15 @@ public class IntcodeTest {
         assertEquals(99, pc.memread(4));
         assertEquals(0, pc.memread(5));
     }
+
+    @Test
+    public void modeRel_1() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 109, 1, 109, 2, 204, 3, 100, 99 });
+        pc.setOut(new Out() {
+            @Override
+            public void write(long n) {
+                assertEquals(100, n);
+            }
+        });
+    }
 }
