@@ -14,7 +14,7 @@ public class WIn implements In {
         this(new long[0]);
     }
 
-    public WIn(long[] initialData) {
+    public WIn(long... initialData) {
         this.data = new long[initialData.length];
         System.arraycopy(initialData, 0, data, 0, initialData.length);
         readIdx = 0;
