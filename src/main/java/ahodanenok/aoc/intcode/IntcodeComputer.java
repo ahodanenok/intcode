@@ -1,6 +1,24 @@
 package ahodanenok.aoc.intcode;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 public class IntcodeComputer {
+
+    public static long[] load(String fileName) throws IOException  {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line = reader.readLine();
+            String[] parts = line.split(",");
+
+            long[] program = new long[parts.length];
+            for (int i = 0; i < parts.length; i++) {
+                program[i] = Long.parseLong(parts[i].trim());
+            }
+
+            return program;
+        }
+    }
 
     private static final long OPCODE_SUM = 1;
     private static final long OPCODE_MUL = 2;
