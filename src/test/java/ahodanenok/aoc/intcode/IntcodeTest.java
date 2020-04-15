@@ -267,6 +267,34 @@ public class IntcodeTest {
     }
 
     @Test
+    public void eq_1() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 1108, 1, 1, 5, 99, 0 });
+        pc.run();
+
+        assertEquals(1108, pc.memread(0));
+        assertEquals(1, pc.memread(1));
+        assertEquals(1, pc.memread(2));
+        assertEquals(5, pc.memread(3));
+        assertEquals(99, pc.memread(4));
+        assertEquals(1, pc.memread(5));
+        assertEquals(0, pc.memread(6));
+    }
+
+    @Test
+    public void eq_2() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 1108, 2, 1, 5, 99, 1 });
+        pc.run();
+
+        assertEquals(1108, pc.memread(0));
+        assertEquals(2, pc.memread(1));
+        assertEquals(1, pc.memread(2));
+        assertEquals(5, pc.memread(3));
+        assertEquals(99, pc.memread(4));
+        assertEquals(0, pc.memread(5));
+        assertEquals(0, pc.memread(6));
+    }
+
+    @Test
     public void modeIm_1() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 1002, 4, 3, 4, 33 });
         pc.run();
