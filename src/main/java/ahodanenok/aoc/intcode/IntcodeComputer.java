@@ -2,6 +2,9 @@ package ahodanenok.aoc.intcode;
 
 public class IntcodeComputer {
 
+    private static final long OPCODE_SUM = 1;
+    private static final long OPCODE_MUL = 2;
+
     private ExecutionContext context;
     private In in;
     private Out out;
@@ -30,6 +33,21 @@ public class IntcodeComputer {
     }
 
     public void run() {
-
+        while (memread(context.pc) != 99) {
+            long opcode = memread(context.pc);
+            if (opcode == OPCODE_SUM) {
+                long a = memread(context.pc + 1);
+                long b = memread(context.pc + 2);
+                memset((int) memread(context.pc + 3), a + b);
+                context.pc += 4;
+            } else if (opcode == OPCODE_MUL) {
+                long a = memread(context.pc + 1);
+                long b = memread(context.pc + 2);
+                memset((int) memread(context.pc + 3), a * b);
+                context.pc += 4;
+            } else {
+                throw new IllegalStateException(String.format("Unknown opcode %d at position %d", opcode, context.pc));
+            }
+        }
     }
 }
