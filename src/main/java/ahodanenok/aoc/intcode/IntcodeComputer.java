@@ -8,6 +8,7 @@ public class IntcodeComputer {
     private static final long OPCODE_OUT = 4;
     private static final long OPCODE_JNZ = 5;
     private static final long OPCODE_JZE = 6;
+    private static final long OPCODE_LT = 7;
     private static final long OPCODE_REL = 9;
 
     private static final long MODE_POSITION = 0;
@@ -81,6 +82,11 @@ public class IntcodeComputer {
                 } else {
                     context.pc += 3;
                 }
+            } else if (opcode == OPCODE_LT) {
+                long a = _memread(instruction, 1);
+                long b = _memread(instruction, 2);
+                _memset(instruction, 3, a < b ? 1 : 0);
+                context.pc += 4;
             } else {
                 throw new IllegalStateException(String.format("Unknown opcode %d at position %d", opcode, context.pc));
             }
