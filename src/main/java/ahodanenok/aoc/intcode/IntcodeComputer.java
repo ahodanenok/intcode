@@ -7,6 +7,9 @@ public class IntcodeComputer {
     private static final long OPCODE_IN = 3;
     private static final long OPCODE_OUT = 4;
 
+    private static final long MODE_POSITION = 0;
+    private static final long MODE_IMMEDIATE = 1;
+
     private ExecutionContext context;
     private In in;
     private Out out;
@@ -36,24 +39,24 @@ public class IntcodeComputer {
 
     public void run() {
         while (memread(context.pc) != 99) {
-            long opcode = memread(context.pc);
+            long instruction = memread(context.pc);
+            long opcode = instruction % 100;
             if (opcode == OPCODE_SUM) {
-                long a = _memread(1);
-                long b = _memread(2);
-                _memset(3, a + b);
+                long a = _memread(instruction, 1);
+                long b = _memread(instruction, 2);
+                _memset(instruction, 3, a + b);
                 context.pc += 4;
             } else if (opcode == OPCODE_MUL) {
-                long a = _memread(1);
-                long b = _memread(2);
-                _memset(3, a * b);
+                long a = _memread(instruction, 1);
+                long b = _memread(instruction, 2);
+                _memset(instruction, 3, a * b);
                 context.pc += 4;
             } else if (opcode == OPCODE_IN) {
                 long n = in.read();
-                System.out.println("n: " + n);
-                _memset(1, n);
+                _memset(instruction, 1, n);
                 context.pc += 2;
             } else if (opcode == OPCODE_OUT) {
-                long n = _memread(1);
+                long n = _memread(instruction, 1);
                 out.write(n);
                 context.pc += 2;
             } else {
@@ -65,11 +68,29 @@ public class IntcodeComputer {
         in.close();
     }
 
-    private long _memread(int offset) {
-        return memread((int) memread(context.pc + offset));
+    private long _memread(long instruction, int offset) {
+        assert offset > 0;
+        return memread(_address(instruction, offset));
     }
 
-    private void _memset(int offset, long value) {
-        memset((int) memread(context.pc + offset), value);
+    private void _memset(long instruction, int offset, long value) {
+        assert offset > 0;
+        memset(_address(instruction, offset), value);
+    }
+
+    private int _address(long instruction, int offset) {
+        assert offset > 0;
+
+        int n = 10; // parameters mode read from right-to-left after two-digits opcode
+        for (int i = 0; i < offset; i++) n *= 10;
+
+        long mode = (instruction / n) % 10;
+        if (mode == MODE_POSITION) {
+            return (int) memread(context.pc + offset);
+        } else if (mode == MODE_IMMEDIATE) {
+            return context.pc + offset;
+        } else {
+            throw new IllegalStateException("Unknown parameter mode " + mode + " in opcode " + instruction);
+        }
     }
 }
