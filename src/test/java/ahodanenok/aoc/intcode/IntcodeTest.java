@@ -342,6 +342,33 @@ public class IntcodeTest {
     }
 
     @Test
+    public void interrupt_1() {
+        IntcodeComputer pc = new IntcodeComputer(new long[] { 3, 5, 4, 5, 99 });
+        pc.setIn(new In() {
+            @Override
+            public long read() {
+                pc.interrupt();
+                return 10;
+            }
+        });
+        pc.setOut(new Out() {
+            @Override
+            public void write(long n) {
+                throw new IllegalStateException();
+            }
+        });
+        pc.run();
+
+        assertEquals(3, pc.memread(0));
+        assertEquals(5, pc.memread(1));
+        assertEquals(4, pc.memread(2));
+        assertEquals(5, pc.memread(3));
+        assertEquals(99, pc.memread(4));
+        assertEquals(10, pc.memread(5));
+        assertEquals(0, pc.memread(6));
+    }
+
+    @Test
     public void testPrg_1() {
         IntcodeComputer pc = new IntcodeComputer(new long[] { 1, 9, 10, 3, 2, 3, 11, 0, 99, 30, 40, 50 });
         pc.run();

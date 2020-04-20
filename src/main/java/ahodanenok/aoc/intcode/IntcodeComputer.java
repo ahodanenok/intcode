@@ -41,7 +41,7 @@ public class IntcodeComputer {
     private In in;
     private Out out;
 
-    private boolean stopOnOut;
+    private boolean interrupted;
 
     public IntcodeComputer(long[] program) {
         memory = new Memory(program);
@@ -65,8 +65,8 @@ public class IntcodeComputer {
         return out;
     }
 
-    public void setStopOnOut(boolean stopOnOut) {
-        this.stopOnOut = stopOnOut;
+    public void interrupt() {
+        interrupted = true;
     }
 
     public void memset(int address, long value) {
@@ -78,7 +78,8 @@ public class IntcodeComputer {
     }
 
     public void run() {
-        while (memread(pc) != 99) {
+        interrupted = false;
+        while (memread(pc) != 99 && !interrupted) {
             long instruction = memread(pc);
             long opcode = instruction % 100;
             if (opcode == OPCODE_SUM) {
@@ -99,9 +100,6 @@ public class IntcodeComputer {
                 long n = _memread(instruction, 1);
                 out.write(n);
                 pc += 2;
-                if (stopOnOut) {
-                    return;
-                }
             } else if (opcode == OPCODE_REL) {
                 long n = _memread(instruction, 1);
                 relativeBase += n;
